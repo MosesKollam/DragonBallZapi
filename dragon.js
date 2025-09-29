@@ -2,6 +2,7 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 const path_p = require('path');
+const path_port = process.env.PORT;
 // const base_path = "D://complete-node-bootcamp-master (1)//Node Tutorials//promises and callbacks//dragonballAPI"
 const base_path = `${__dirname}`
 index = fs.readFileSync(path_p.join(base_path, 'dragon.html').replace(/^\/+/, ''));
@@ -34,6 +35,7 @@ const server = http.createServer(function (request, response) {
         });
     }
 })
-server.listen(8000, '127.0.0.1', function () {
+server.listen(path_port, function () {
     console.log('Server running');
+
 })
