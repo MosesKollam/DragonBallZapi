@@ -5,7 +5,7 @@ const path_p = require('path');
 const path_port = process.env.PORT || 8080;
 // const base_path = "D://complete-node-bootcamp-master (1)//Node Tutorials//promises and callbacks//dragonballAPI"
 const base_path = `${__dirname}`
-index = fs.readFileSync(path_p.join(base_path, 'dragon.html').replace(/^\/+/, ''));
+index = fs.readFileSync(path_p.join(base_path, 'dragon.html'));
 
 const server = http.createServer(function (request, response) {
     let path = request.url;
@@ -39,4 +39,5 @@ server.listen(path_port, function () {
     console.log('Server running');
 
 })
+
 
