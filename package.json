@@ -1,0 +1,12 @@
+{
+  "name": "dragonballapi",
+  "version": "1.0.0",
+  "main": "dragon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "dragon"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
