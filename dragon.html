@@ -18,11 +18,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        /* Navbar */
         .navbar {
             background-color: #FA812F;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
+        /* Buttons */
         .btn {
             background-color: #FEF3E2;
             color: #DD0303;
@@ -39,6 +41,7 @@
             transform: translateY(-2px);
         }
 
+        /* Autocomplete */
         .autocomplete-items {
             position: absolute;
             top: 100%;
@@ -88,6 +91,7 @@
             background: #dd3300;
         }
 
+        /* Cards */
         .cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -138,7 +142,6 @@
             width: 100%;
             height: 250px;
             object-fit: contain;
-            /* keeps full image visible */
             background-color: #000;
             border-bottom: 3px solid #fff;
         }
@@ -159,6 +162,7 @@
             text-shadow: 1px 1px #000;
         }
 
+        /* Heading */
         .nameheading {
             margin: 30px 0;
             padding: 20px;
@@ -171,7 +175,6 @@
 
         .nameheading h1,
         .nameheading h2 {
-            /* font-family: 'Impact', 'Segoe UI Black', sans-serif; */
             color: #fff;
             text-shadow: 2px 2px 5px #000, 0 0 10px #ffdd66, 0 0 20px #ff6600;
             margin: 10px 0;
@@ -203,82 +206,35 @@
             }
         }
 
-        /* --- Mobile Responsive --- */
-        /* --- Mobile Responsive --- */
-        @media (max-width: 600px) {
-            body {
-                background-size: cover;
-                background-position: center;
-            }
+        /* Mobile search bar wrapper */
+        .mobile-search {
+            display: none;
+            justify-content: center;
+            padding: 10px 15px;
+            background-color: #FA812F;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
 
+        .mobile-search .searchbar {
+            width: 80%;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
             .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 10px;
+                display: none;
             }
 
-            /* Fix search bar and button */
-            #searchForm {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                position: relative;
-            }
-
-            .searchbar {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 8px 12px;
-                font-size: 1rem;
-            }
-
-            .btn {
-                width: 100% !important;
-                padding: 8px 0;
-                font-size: 1rem;
-            }
-
-            .autocomplete-items {
-                width: 100% !important;
-                max-height: 150px;
-                font-size: 0.9rem;
-            }
-
-            .autocomplete-item {
-                padding: 8px 10px;
-            }
-
-            .nameheading h1 {
-                font-size: 1.8rem;
-                line-height: 1.2;
-            }
-
-            .nameheading {
-                margin: 20px 10px;
-                padding: 15px;
-            }
-
-            .cards-container {
-                flex-direction: column;
-                gap: 15px;
-                margin: 10px;
-                align-items: center;
-            }
-
-            .card {
-                width: 90%;
-                max-width: 300px;
-            }
-
-            .card-img-top {
-                height: 180px;
+            .mobile-search {
+                display: flex !important;
             }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Desktop Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Dragon Ball Z</a>
@@ -291,10 +247,21 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Search Bar -->
+    <div class="mobile-search">
+        <form class="d-flex position-relative" id="mobileSearchForm">
+            <input class="form-control me-2 searchbar" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn" type="submit">Search</button>
+            <div id="mobile-autocomplete-list" class="autocomplete-items"></div>
+        </form>
+    </div>
+
     <div class="nameheading">
         <h1>Search for the Dragon Ball Z character</h1>
         <h5>Created by K.Stephen Moses B.Tech,B.Sc,PG</h5>
     </div>
+
     <div class="cards-container" id="cardsContainer"></div>
 
     <script>
@@ -307,43 +274,52 @@
             "Gran Kaio", "Kaio-shin del Este", "Kaio-shin del norte", "Kaio-shin del Sur", "Kaio-shin del Oeste", "Gran Kaio-shin", "Kibito"
         ];
 
-        const searchInput = document.querySelector(".searchbar");
-        const autocompleteList = document.getElementById("autocomplete-list");
         const cardsContainer = document.getElementById("cardsContainer");
 
-        searchInput.addEventListener("input", function () {
-            const value = this.value.toLowerCase();
-            autocompleteList.innerHTML = "";
-            if (!value) return;
+        // Common function for autocomplete
+        function setupAutocomplete(input, listContainer) {
+            input.addEventListener("input", function () {
+                const value = this.value.toLowerCase();
+                listContainer.innerHTML = "";
+                if (!value) return;
 
-            // const filtered = character_array.filter(name => name.toLowerCase().includes(value));
-            const filtered = character_array.filter(function (name) {
-                return name.toLocaleLowerCase().includes(value.toLowerCase());
-            });
-            filtered.forEach(name => {
-                const item = document.createElement("div");
-                item.classList.add("autocomplete-item");
-                item.innerText = name;
-                item.addEventListener("click", function () {
-                    searchInput.value = name;
-                    autocompleteList.innerHTML = "";
-                    fetchCharacter(name);
+                const filtered = character_array.filter(name => name.toLowerCase().includes(value));
+                filtered.forEach(name => {
+                    const item = document.createElement("div");
+                    item.classList.add("autocomplete-item");
+                    item.innerText = name;
+                    item.addEventListener("click", function () {
+                        input.value = name;
+                        listContainer.innerHTML = "";
+                        fetchCharacter(name);
+                    });
+                    listContainer.appendChild(item);
                 });
-                autocompleteList.appendChild(item);
             });
-        });
 
-        document.addEventListener("click", function (e) {
-            if (e.target !== searchInput) autocompleteList.innerHTML = "";
-        });
+            document.addEventListener("click", function (e) {
+                if (e.target !== input) listContainer.innerHTML = "";
+            });
+        }
 
-        document.getElementById("searchForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const searchValue = searchInput.value.trim();
-            if (searchValue) fetchCharacter(searchValue);
-            autocompleteList.innerHTML = "";
-        });
+        // Setup desktop and mobile autocomplete
+        setupAutocomplete(document.querySelector("#searchForm .searchbar"), document.getElementById("autocomplete-list"));
+        setupAutocomplete(document.querySelector("#mobileSearchForm .searchbar"), document.getElementById("mobile-autocomplete-list"));
 
+        // Common search submit
+        function setupSearchForm(form, input, listContainer) {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const searchValue = input.value.trim();
+                if (searchValue) fetchCharacter(searchValue);
+                listContainer.innerHTML = "";
+            });
+        }
+
+        setupSearchForm(document.getElementById("searchForm"), document.querySelector("#searchForm .searchbar"), document.getElementById("autocomplete-list"));
+        setupSearchForm(document.getElementById("mobileSearchForm"), document.querySelector("#mobileSearchForm .searchbar"), document.getElementById("mobile-autocomplete-list"));
+
+        // Fetch character data
         async function fetchCharacter(name) {
             try {
                 const index = character_array.findIndex(n => n.toLowerCase() === name.toLowerCase());
@@ -361,12 +337,12 @@
                 const mainCard = document.createElement("div");
                 mainCard.classList.add("card");
                 mainCard.innerHTML = `
-                <img src="${data.image}" class="card-img-top" alt="${data.name}">
-                <div class="card-body">
-                    <h5 class="card-title">${data.name}</h5>
-                    <p class="card-text"><strong>Race:</strong> ${data.race || "Unknown"}</p>
-                    <p class="card-text"><strong>Status:</strong> ${data.status || "Unknown"}</p>
-                </div>`;
+                    <img src="${data.image}" class="card-img-top" alt="${data.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${data.name}</h5>
+                        <p class="card-text"><strong>Race:</strong> ${data.race || "Unknown"}</p>
+                        <p class="card-text"><strong>Status:</strong> ${data.status || "Unknown"}</p>
+                    </div>`;
                 cardsContainer.appendChild(mainCard);
 
                 if (data.transformations && data.transformations.length > 0) {
@@ -374,10 +350,10 @@
                         const card = document.createElement("div");
                         card.classList.add("card");
                         card.innerHTML = `
-                        <img src="${trans.image}" class="card-img-top" alt="${trans.name}">
-                        <div class="card-body">
-                            <h5 class="card-title">${trans.name}</h5>
-                            <p class="card-text"><strong>Ki:</strong> ${trans.ki || "Unknown"}</p>
+                            <img src="${trans.image}" class="card-img-top" alt="${trans.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${trans.name}</h5>
+                                <p class="card-text"><strong>Ki:</strong> ${trans.ki || "Unknown"}</p>
                             </div>`;
                         cardsContainer.appendChild(card);
                     });
